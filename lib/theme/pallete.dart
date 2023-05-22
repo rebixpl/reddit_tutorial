@@ -19,6 +19,13 @@ class Pallete {
         color: whiteColor,
       ),
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        foregroundColor: MaterialStateProperty.all<Color>(
+          blueColor, // Set the desired color here
+        ),
+      ),
+    ),
     drawerTheme: const DrawerThemeData(
       backgroundColor: drawerColor,
     ),
@@ -36,6 +43,13 @@ class Pallete {
       elevation: 0,
       iconTheme: IconThemeData(
         color: blackColor,
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        foregroundColor: MaterialStateProperty.all<Color>(
+          blueColor, // Set the desired color here
+        ),
       ),
     ),
     drawerTheme: const DrawerThemeData(
