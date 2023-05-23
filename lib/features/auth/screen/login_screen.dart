@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_tutorial/core/common/sign_in_button.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -44,6 +45,7 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20.0),
+          const SignInButton(),
         ],
       ),
     );
