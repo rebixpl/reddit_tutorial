@@ -7,6 +7,12 @@ import 'package:reddit_tutorial/features/community/repository/community_reposito
 import 'package:reddit_tutorial/models/community_model.dart';
 import 'package:routemaster/routemaster.dart';
 
+/// ------------------- USER COMMUNITIES PROVIDER -----------------------------
+final userCommunitiesProvider = StreamProvider<List<Community>>((ref) {
+  final communityController = ref.watch(communityControllerProvider.notifier);
+  return communityController.getUserCommunities();
+});
+
 /// --------------- COMMUNITY CONTROLLER PROVIDER -----------------------------
 final communityControllerProvider =
     StateNotifierProvider<CommunityController, bool>((ref) {
@@ -59,5 +65,10 @@ class CommunityController extends StateNotifier<bool> {
         Routemaster.of(context).pop();
       },
     );
+  }
+
+  Stream<List<Community>> getUserCommunities() {
+    final uid = _ref.read(userProvider)!.uid;
+    return _communityRepository.getUserCommunities(uid);
   }
 }
