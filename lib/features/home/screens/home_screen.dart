@@ -10,6 +10,27 @@ class HomeScreen extends ConsumerWidget {
     final user = ref.watch(userProvider)!;
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home'),
+        centerTitle: false,
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {},
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: CircleAvatar(
+              radius: 16.0,
+              backgroundImage: NetworkImage(user.profilePic),
+            ),
+            onPressed: () {},
+          ),
+        ],
+      ),
       body: Center(
         child: Text(user.name),
       ),
