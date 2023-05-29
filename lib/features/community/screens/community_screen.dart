@@ -5,6 +5,7 @@ import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/community/controller/community_controller.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
+import 'package:routemaster/routemaster.dart';
 
 class CommunityScreen extends ConsumerWidget {
   final String name;
@@ -18,6 +19,10 @@ class CommunityScreen extends ConsumerWidget {
   // for example:
   // http://localhost:4000/r/memes
   // http://localhost:4000/r/FlutterDev
+
+  void navigateToModTools(BuildContext context) {
+    Routemaster.of(context).push('/mod-tools/$name');
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -67,7 +72,8 @@ class CommunityScreen extends ConsumerWidget {
                             ),
                             community.mods.contains(user.uid)
                                 ? OutlinedButton(
-                                    onPressed: () {},
+                                    onPressed: () =>
+                                        navigateToModTools(context),
                                     style: ElevatedButton.styleFrom(
                                       foregroundColor: Pallete.blueColor,
                                       shape: RoundedRectangleBorder(
