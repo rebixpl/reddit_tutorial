@@ -5,8 +5,10 @@ import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/repository/auth_repository.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 
+// ------------------- USER PROVIDER -----------------------------------
 final userProvider = StateProvider<UserModel?>((ref) => null);
 
+// ------------------- AUTH CONTROLLER PROVIDER ------------------------
 final authControllerProvider = StateNotifierProvider<AuthController, bool>(
   (ref) => AuthController(
     authRepository: ref.watch(authRepositoryProvider),
@@ -14,6 +16,7 @@ final authControllerProvider = StateNotifierProvider<AuthController, bool>(
   ),
 );
 
+// ------------------- AUTH STATE CHANGE PROVIDER ---------------------
 final authStateChangeProvider = StreamProvider<User?>(
   (ref) {
     final authController = ref.watch(authControllerProvider.notifier);
@@ -21,6 +24,7 @@ final authStateChangeProvider = StreamProvider<User?>(
   },
 );
 
+// ------------------- GET USER DATA PROVIDER ------------------------
 final getUserDataProvider = StreamProvider.family<UserModel, String>(
   (ref, String uid) {
     final authController = ref.watch(authControllerProvider.notifier);
@@ -28,6 +32,7 @@ final getUserDataProvider = StreamProvider.family<UserModel, String>(
   },
 );
 
+// ------------------- AUTH CONTROLLER -------------------------------
 class AuthController extends StateNotifier<bool> {
   final AuthRepository _authRepository;
   final Ref _ref;
@@ -59,5 +64,9 @@ class AuthController extends StateNotifier<bool> {
 
   Stream<UserModel> getUserData(String uid) {
     return _authRepository.getUserData(uid);
+  }
+
+  void logOut() async {
+    _authRepository.logOut();
   }
 }
