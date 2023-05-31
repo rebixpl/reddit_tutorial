@@ -84,6 +84,7 @@ class CommunityScreen extends ConsumerWidget {
                                         navigateToModTools(context),
                                     style: ElevatedButton.styleFrom(
                                       foregroundColor: Pallete.blueColor,
+                                      backgroundColor: Pallete.drawerColor,
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(10.0),
@@ -100,6 +101,7 @@ class CommunityScreen extends ConsumerWidget {
                                         joinCommunity(ref, community, context),
                                     style: ElevatedButton.styleFrom(
                                       foregroundColor: Pallete.blueColor,
+                                      backgroundColor: Pallete.drawerColor,
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(10.0),
