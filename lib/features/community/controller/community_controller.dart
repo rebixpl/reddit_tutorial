@@ -10,13 +10,13 @@ import 'package:reddit_tutorial/features/community/repository/community_reposito
 import 'package:reddit_tutorial/models/community_model.dart';
 import 'package:routemaster/routemaster.dart';
 
-/// ------------------- USER COMMUNITIES PROVIDER -----------------------------
+// ------------------- USER COMMUNITIES PROVIDER -----------------------------
 final userCommunitiesProvider = StreamProvider<List<Community>>((ref) {
   final communityController = ref.watch(communityControllerProvider.notifier);
   return communityController.getUserCommunities();
 });
 
-/// --------------- COMMUNITY CONTROLLER PROVIDER -----------------------------
+// --------------- COMMUNITY CONTROLLER PROVIDER -----------------------------
 final communityControllerProvider =
     StateNotifierProvider<CommunityController, bool>((ref) {
   final communityRepository = ref.watch(communityRepositoryProvider);
@@ -28,7 +28,7 @@ final communityControllerProvider =
   );
 });
 
-/// ------------------- GET COMMUNITY BY NAME PROVIDER ------------------------
+// ------------------- GET COMMUNITY BY NAME PROVIDER ------------------------
 final getCommunityByNameProvider =
     StreamProvider.family<Community, String>((ref, String name) {
   return ref
@@ -36,7 +36,13 @@ final getCommunityByNameProvider =
       .getCommunityByName(name);
 });
 
-/// ------------------------ COMMUNITY CONTROLLER ----------------------------
+// ------------------- SEARCH COMMUNITY PROVIDER ------------------------------
+final searchCommunityProvider =
+    StreamProvider.family<List<Community>, String>((ref, String query) {
+  return ref.watch(communityControllerProvider.notifier).searchCommunity(query);
+});
+
+// ------------------------ COMMUNITY CONTROLLER ----------------------------
 class CommunityController extends StateNotifier<bool> {
   final CommunityRepository _communityRepository;
   final StorageRepository _storageRepository;
@@ -141,5 +147,9 @@ class CommunityController extends StateNotifier<bool> {
       (l) => showSnackBar(context, l.message),
       (r) => Routemaster.of(context).pop(),
     );
+  }
+
+  Stream<List<Community>> searchCommunity(String query) {
+    return _communityRepository.searchCommunity(query);
   }
 }
