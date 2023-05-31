@@ -29,7 +29,33 @@ class CommunityRepository {
       }
       return right(_communities.doc(community.name).set(community.toMap()));
     } on FirebaseException catch (e) {
-      return left(Failure(e.message!));
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid joinCommunity(String communityName, String userId) async {
+    try {
+      return right(_communities.doc(communityName).update({
+        'members':
+            FieldValue.arrayUnion([userId]), // add userId to existing members
+      }));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid leaveCommunity(String communityName, String userId) async {
+    try {
+      return right(_communities.doc(communityName).update({
+        'members': FieldValue.arrayRemove(
+            [userId]), // remove userId from existing members
+      }));
+    } on FirebaseException catch (e) {
+      throw e.message!;
     } catch (e) {
       return left(Failure(e.toString()));
     }
