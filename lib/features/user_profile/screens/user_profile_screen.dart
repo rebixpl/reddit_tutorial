@@ -20,6 +20,8 @@ class UserProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeNotifierProvider.notifier).mode;
+
     return Scaffold(
       body: ref.watch(getUserDataProvider(uid)).when(
             data: (user) => NestedScrollView(
@@ -54,7 +56,9 @@ class UserProfileScreen extends ConsumerWidget {
                             onPressed: () => navigateToEditUser(context),
                             style: ElevatedButton.styleFrom(
                               foregroundColor: Pallete.blueColor,
-                              backgroundColor: Pallete.drawerColor,
+                              backgroundColor: themeMode == ThemeMode.dark
+                                  ? Pallete.drawerColor
+                                  : Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),

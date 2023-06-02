@@ -35,6 +35,7 @@ class CommunityScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider)!;
+    final themeMode = ref.watch(themeNotifierProvider.notifier).mode;
 
     return Scaffold(
       body: ref.watch(getCommunityByNameProvider(name)).when(
@@ -84,7 +85,10 @@ class CommunityScreen extends ConsumerWidget {
                                         navigateToModTools(context),
                                     style: ElevatedButton.styleFrom(
                                       foregroundColor: Pallete.blueColor,
-                                      backgroundColor: Pallete.drawerColor,
+                                      backgroundColor:
+                                          themeMode == ThemeMode.dark
+                                              ? Pallete.drawerColor
+                                              : Colors.white,
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(10.0),
@@ -101,7 +105,10 @@ class CommunityScreen extends ConsumerWidget {
                                         joinCommunity(ref, community, context),
                                     style: ElevatedButton.styleFrom(
                                       foregroundColor: Pallete.blueColor,
-                                      backgroundColor: Pallete.drawerColor,
+                                      backgroundColor:
+                                          themeMode == ThemeMode.dark
+                                              ? Pallete.drawerColor
+                                              : Colors.white,
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(10.0),
