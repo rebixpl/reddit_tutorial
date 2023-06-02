@@ -1,12 +1,22 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/home/delegates/search_community_delegate.dart';
 import 'package:reddit_tutorial/features/home/drawers/community_list_drawer.dart';
 import 'package:reddit_tutorial/features/home/drawers/profile_drawer.dart';
+import 'package:reddit_tutorial/theme/pallete.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  int _pageIndex = 0;
 
   void displayDrawer(BuildContext context) {
     Scaffold.of(context).openDrawer();
@@ -16,9 +26,16 @@ class HomeScreen extends ConsumerWidget {
     Scaffold.of(context).openEndDrawer();
   }
 
+  void onPageChange(int page) {
+    setState(() {
+      _pageIndex = page;
+    });
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final user = ref.watch(userProvider)!;
+    final currentTheme = ref.watch(themeNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -54,11 +71,23 @@ class HomeScreen extends ConsumerWidget {
           }),
         ],
       ),
-      body: Center(
-        child: Text(user.name),
-      ),
+      body: Constants.tabWidgets[_pageIndex],
       drawer: const CommunityListDrawer(),
       endDrawer: const ProfileDrawer(),
+      bottomNavigationBar: CupertinoTabBar(
+        activeColor: currentTheme.iconTheme.color,
+        backgroundColor: currentTheme.colorScheme.background,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+          ),
+        ],
+        onTap: onPageChange,
+        currentIndex: _pageIndex,
+      ),
     );
   }
 }
