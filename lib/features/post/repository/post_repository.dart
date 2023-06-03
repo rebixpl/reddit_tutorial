@@ -5,6 +5,7 @@ import 'package:reddit_tutorial/core/constants/firebase_constants.dart';
 import 'package:reddit_tutorial/core/failure.dart';
 import 'package:reddit_tutorial/core/providers/firebase_providers.dart';
 import 'package:reddit_tutorial/core/type_defs.dart';
+import 'package:reddit_tutorial/models/post_model.dart';
 
 // ------------------- ADD POST REPOSITORY PROVIDER ------------------------
 final postRepositoryProvider = Provider<PostRepository>((ref) {
@@ -21,7 +22,7 @@ class PostRepository {
 
   FutureVoid addPost(Post post) async {
     try {
-      return right(_posts.doc(post.id).set(post.toJson()));
+      return right(_posts.doc(post.id).set(post.toMap()));
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
