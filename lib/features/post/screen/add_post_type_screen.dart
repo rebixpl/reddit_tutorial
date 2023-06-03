@@ -3,8 +3,12 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_tutorial/core/common/error_text.dart';
+import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/utils.dart';
+import 'package:reddit_tutorial/features/community/controller/community_controller.dart';
 import 'package:reddit_tutorial/features/user_profile/screens/widgets/rounded_text_field.dart';
+import 'package:reddit_tutorial/models/community_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
 class AddPostTypeScreen extends ConsumerStatefulWidget {
@@ -21,14 +25,19 @@ class AddPostTypeScreen extends ConsumerStatefulWidget {
 
 class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
   final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final linkController = TextEditingController();
 
-  File? bannerFile;
-  void selectBannerImage() async {
+  List<Community> communities = [];
+  Community? selectedCommunity;
+
+  File? postFile;
+  void selectPostImage() async {
     final res = await pickImage();
 
     if (res != null) {
       setState(() {
-        bannerFile = File(res.files.first.path!);
+        postFile = File(res.files.first.path!);
       });
     }
   }
@@ -36,6 +45,8 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
   @override
   void dispose() {
     titleController.dispose();
+    descriptionController.dispose();
+    linkController.dispose();
     super.dispose();
   }
 
@@ -64,11 +75,12 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
             RoundedTextField(
               controller: titleController,
               hintText: 'Enter Title Here',
+              maxLength: 30,
             ),
             const SizedBox(height: 10.0),
             if (isTypeImage)
               GestureDetector(
-                onTap: selectBannerImage,
+                onTap: selectPostImage,
                 child: DottedBorder(
                   radius: const Radius.circular(10.0),
                   dashPattern: const [10, 4],
@@ -81,8 +93,8 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    child: bannerFile != null
-                        ? Image.file(bannerFile!)
+                    child: postFile != null
+                        ? Image.file(postFile!)
                         : const Center(
                             child: Icon(
                               Icons.camera_alt_outlined,
@@ -92,6 +104,50 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
                   ),
                 ),
               ),
+            if (isTypeText)
+              RoundedTextField(
+                controller: descriptionController,
+                maxLines: 5,
+                hintText: 'Enter Description Here',
+              ),
+            if (isTypeLink)
+              RoundedTextField(
+                controller: linkController,
+                hintText: 'Enter Link Here',
+              ),
+            const SizedBox(height: 20.0),
+            const Align(
+              alignment: Alignment.topLeft,
+              child: Text('Select Community'),
+            ),
+            ref.watch(userCommunitiesProvider).when(
+                  data: (data) {
+                    communities = data;
+
+                    if (data.isEmpty) const SizedBox();
+
+                    return DropdownButton(
+                      value: selectedCommunity ?? data[0],
+                      items: data
+                          .map(
+                            (e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(e.name),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          selectedCommunity = val;
+                        });
+                      },
+                    );
+                  },
+                  error: (error, stackTrace) => ErrorText(
+                    error: error.toString(),
+                  ),
+                  loading: () => const Loader(),
+                ),
           ],
         ),
       ),
