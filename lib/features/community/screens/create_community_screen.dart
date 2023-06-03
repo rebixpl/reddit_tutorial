@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/features/community/controller/community_controller.dart';
+import 'package:reddit_tutorial/features/user_profile/screens/widgets/rounded_text_field.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
 class CreateCommunityScreen extends ConsumerStatefulWidget {
@@ -47,18 +48,10 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                     child: Text('Community Name'),
                   ),
                   const SizedBox(height: 10.0),
-                  TextField(
+                  RoundedTextField(
                     controller: communityNameController,
+                    hintText: 'r/CommunityName',
                     maxLength: 21,
-                    decoration: InputDecoration(
-                      hintText: 'r/CommunityName',
-                      filled: true,
-                      contentPadding: const EdgeInsets.all(18.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
                   ),
                   const SizedBox(height: 30.0),
                   ElevatedButton(

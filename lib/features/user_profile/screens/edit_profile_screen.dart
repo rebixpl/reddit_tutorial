@@ -9,6 +9,7 @@ import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/user_profile/controller/user_profile_controller.dart';
+import 'package:reddit_tutorial/features/user_profile/screens/widgets/rounded_text_field.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
@@ -147,23 +148,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             ],
                           ),
                         ),
-                        TextField(
+                        RoundedTextField(
                           controller: nameController,
-                          decoration: InputDecoration(
-                            filled: true,
-                            hintText: 'Name',
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.blue,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide.none,
-                            ),
-                            contentPadding: const EdgeInsets.all(18),
-                          ),
+                          hintText: 'Name',
                         ),
                       ],
                     ),
