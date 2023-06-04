@@ -1,6 +1,7 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/models/post_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
@@ -129,6 +130,56 @@ class PostCard extends ConsumerWidget {
                                 color: Colors.grey,
                               ),
                             ),
+                          Row(
+                            children: [
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Constants.up,
+                                      size: 30.0,
+                                      color: post.upvotes.contains(user.uid)
+                                          ? Pallete.redColor
+                                          : null,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${post.upvotes.length - post.downvotes.length == 0 ? 'Vote' : post.upvotes.length - post.downvotes.length}',
+                                    style: const TextStyle(
+                                      fontSize: 17.0,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Constants.down,
+                                      size: 30.0,
+                                      color: post.downvotes.contains(user.uid)
+                                          ? Pallete.redColor
+                                          : null,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(
+                                      Icons.comment,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${post.commentCount == 0 ? 'Comment' : post.commentCount}',
+                                    style: const TextStyle(
+                                      fontSize: 17.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
