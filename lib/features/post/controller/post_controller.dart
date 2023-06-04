@@ -173,6 +173,23 @@ class PostController extends StateNotifier<bool> {
     );
   }
 
+  void deletePost({
+    required BuildContext context,
+    required Post post,
+  }) async {
+    state = true; // show loader
+
+    final res = await _postRepository.deletePost(post);
+
+    state = false; // hide loader
+    res.fold(
+      (l) => showSnackBar(context, l.message),
+      (r) {
+        showSnackBar(context, 'Post Deleted Successfully!');
+      },
+    );
+  }
+
   Stream<List<Post>> fetchUserPosts(List<Community> communities) {
     if (communities.isNotEmpty) {
       return _postRepository.fetchUserPosts(communities);
