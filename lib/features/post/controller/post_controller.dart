@@ -23,6 +23,13 @@ final postControllerProvider =
   );
 });
 
+// ------------------- USER POSTS PROVIDER ------------------------
+final userPostsProvider = StreamProvider.family<List<Post>, List<Community>>(
+    (ref, List<Community> communities) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.fetchUserPosts(communities);
+});
+
 // ------------------- POST CONTROLLER ------------------------
 class PostController extends StateNotifier<bool> {
   final PostRepository _postRepository;
@@ -164,5 +171,13 @@ class PostController extends StateNotifier<bool> {
         );
       },
     );
+  }
+
+  Stream<List<Post>> fetchUserPosts(List<Community> communities) {
+    if (communities.isNotEmpty) {
+      return _postRepository.fetchUserPosts(communities);
+    } else {
+      return Stream.value([]);
+    }
   }
 }
