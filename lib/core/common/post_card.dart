@@ -1,11 +1,15 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_tutorial/core/common/error_text.dart';
+import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
+import 'package:reddit_tutorial/features/community/controller/community_controller.dart';
 import 'package:reddit_tutorial/features/post/controller/post_controller.dart';
 import 'package:reddit_tutorial/models/post_model.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
+import 'package:routemaster/routemaster.dart';
 
 class PostCard extends ConsumerWidget {
   final Post post;
@@ -27,6 +31,14 @@ class PostCard extends ConsumerWidget {
 
   void downvotePost(WidgetRef ref) {
     ref.read(postControllerProvider.notifier).downvote(post);
+  }
+
+  void navigateToUser(BuildContext context) {
+    Routemaster.of(context).push('/u/${post.uid}');
+  }
+
+  void navigateToCommunity(BuildContext context) {
+    Routemaster.of(context).push('/r/${post.communityName}');
   }
 
   @override
@@ -64,10 +76,14 @@ class PostCard extends ConsumerWidget {
                             children: [
                               Row(
                                 children: [
-                                  CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(post.communityProfilePic),
-                                    radius: 16.0,
+                                  GestureDetector(
+                                    onTap: () => navigateToCommunity(context),
+                                    child: CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                        post.communityProfilePic,
+                                      ),
+                                      radius: 16.0,
+                                    ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 8.0),
@@ -75,17 +91,24 @@ class PostCard extends ConsumerWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'r/${post.communityName}',
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold,
+                                        GestureDetector(
+                                          onTap: () =>
+                                              navigateToCommunity(context),
+                                          child: Text(
+                                            'r/${post.communityName}',
+                                            style: const TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
-                                        Text(
-                                          'u/${post.username}',
-                                          style: const TextStyle(
-                                            fontSize: 12.0,
+                                        GestureDetector(
+                                          onTap: () => navigateToUser(context),
+                                          child: Text(
+                                            'u/${post.username}',
+                                            style: const TextStyle(
+                                              fontSize: 12.0,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -145,6 +168,7 @@ class PostCard extends ConsumerWidget {
                               ),
                             ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
                                 children: [
@@ -190,6 +214,29 @@ class PostCard extends ConsumerWidget {
                                       fontSize: 17.0,
                                     ),
                                   ),
+                                  ref
+                                      .watch(getCommunityByNameProvider(
+                                          post.communityName))
+                                      .when(
+                                        data: (community) {
+                                          if (community.mods
+                                              .contains(user.uid)) {
+                                            return IconButton(
+                                              onPressed: () =>
+                                                  deletePost(ref, context),
+                                              icon: const Icon(
+                                                Icons.admin_panel_settings,
+                                              ),
+                                            );
+                                          } else {
+                                            return const SizedBox.shrink();
+                                          }
+                                        },
+                                        loading: () => const Loader(),
+                                        error: (error, stackTrace) => ErrorText(
+                                          error: error.toString(),
+                                        ),
+                                      ),
                                 ],
                               ),
                             ],
