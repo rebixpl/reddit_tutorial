@@ -11,6 +11,12 @@ import 'package:reddit_tutorial/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
 
+final getPostByIdProvider =
+    StreamProvider.family<Post, String>((ref, String postId) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.getPostById(postId);
+});
+
 // ------------------- POST CONTROLLER PROVIDER ------------------------
 final postControllerProvider =
     StateNotifierProvider<PostController, bool>((ref) {
@@ -198,6 +204,10 @@ class PostController extends StateNotifier<bool> {
   void downvote(Post post) async {
     final user = _ref.read(userProvider)!;
     _postRepository.downvote(post, user.uid);
+  }
+
+  Stream<Post> getPostById(String postId) {
+    return _postRepository.getPostById(postId);
   }
 
   Stream<List<Post>> fetchUserPosts(List<Community> communities) {
