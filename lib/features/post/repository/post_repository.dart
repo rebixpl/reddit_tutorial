@@ -110,6 +110,18 @@ class PostRepository {
     }
   }
 
+  Stream<List<Comment>> getCommentsOfPost(String postId) {
+    return _comments
+        .where('postId', isEqualTo: postId)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (event) => event.docs
+              .map((e) => Comment.fromMap(e.data() as Map<String, dynamic>))
+              .toList(),
+        );
+  }
+
   CollectionReference get _posts =>
       _firebaseFirestore.collection(FirebaseConstants.postsCollection);
 

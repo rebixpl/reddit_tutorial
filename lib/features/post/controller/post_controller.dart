@@ -12,6 +12,14 @@ import 'package:reddit_tutorial/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
 
+// ------------------- GET POST COMMENTS PROVIDER ------------------------
+final getPostCommentsProvider =
+    StreamProvider.family<List<Comment>, String>((ref, String postId) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.fetchPostComments(postId);
+});
+
+// ------------------- GET POST BY ID PROVIDER ------------------------
 final getPostByIdProvider =
     StreamProvider.family<Post, String>((ref, String postId) {
   final postController = ref.watch(postControllerProvider.notifier);
@@ -243,5 +251,9 @@ class PostController extends StateNotifier<bool> {
       (l) => showSnackBar(context, l.message),
       (r) => null,
     );
+  }
+
+  Stream<List<Comment>> fetchPostComments(String postId) {
+    return _postRepository.getCommentsOfPost(postId);
   }
 }
