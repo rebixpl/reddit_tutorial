@@ -215,10 +215,13 @@ class PostCard extends ConsumerWidget {
                                       Icons.comment,
                                     ),
                                   ),
-                                  Text(
-                                    '${post.commentCount == 0 ? 'Comment' : post.commentCount}',
-                                    style: const TextStyle(
-                                      fontSize: 17.0,
+                                  GestureDetector(
+                                    onTap: () => navigateToComments(context),
+                                    child: Text(
+                                      '${post.commentCount == 0 ? 'Comment' : post.commentCount}',
+                                      style: const TextStyle(
+                                        fontSize: 17.0,
+                                      ),
                                     ),
                                   ),
                                   ref

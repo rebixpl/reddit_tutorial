@@ -6,6 +6,7 @@ import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart'
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/post/repository/post_repository.dart';
+import 'package:reddit_tutorial/models/comment_model.dart';
 import 'package:reddit_tutorial/models/community_model.dart';
 import 'package:reddit_tutorial/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
@@ -216,5 +217,31 @@ class PostController extends StateNotifier<bool> {
     } else {
       return Stream.value([]);
     }
+  }
+
+  void addComment({
+    required BuildContext context,
+    required String text,
+    required Post post,
+  }) async {
+    final user = _ref.read(userProvider)!;
+
+    String commentId = const Uuid().v4();
+
+    Comment comment = Comment(
+      id: commentId,
+      text: text,
+      createdAt: DateTime.now(),
+      postId: post.id,
+      username: user.name,
+      profilePic: user.profilePic,
+    );
+
+    final res = await _postRepository.addComment(comment);
+
+    res.fold(
+      (l) => showSnackBar(context, l.message),
+      (r) => null,
+    );
   }
 }

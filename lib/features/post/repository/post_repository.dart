@@ -5,6 +5,7 @@ import 'package:reddit_tutorial/core/constants/firebase_constants.dart';
 import 'package:reddit_tutorial/core/failure.dart';
 import 'package:reddit_tutorial/core/providers/firebase_providers.dart';
 import 'package:reddit_tutorial/core/type_defs.dart';
+import 'package:reddit_tutorial/models/comment_model.dart';
 import 'package:reddit_tutorial/models/community_model.dart';
 import 'package:reddit_tutorial/models/post_model.dart';
 
@@ -99,6 +100,19 @@ class PostRepository {
         );
   }
 
+  FutureVoid addComment(Comment comment) async {
+    try {
+      return right(_comments.doc(comment.id).set(comment.toMap()));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
   CollectionReference get _posts =>
       _firebaseFirestore.collection(FirebaseConstants.postsCollection);
+
+  CollectionReference get _comments =>
+      _firebaseFirestore.collection(FirebaseConstants.commentsCollection);
 }
