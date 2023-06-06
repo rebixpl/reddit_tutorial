@@ -10,7 +10,14 @@ import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/community/repository/community_repository.dart';
 import 'package:reddit_tutorial/models/community_model.dart';
+import 'package:reddit_tutorial/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
+
+// ------------------- GET COMMUNITY POST CONTROLLER PROVIDER ------------------------
+final getCommunityPostsProvider =
+    StreamProvider.family<List<Post>, String>((ref, String name) {
+  return ref.read(communityControllerProvider.notifier).getCommunityPosts(name);
+});
 
 // ------------------- USER COMMUNITIES PROVIDER -----------------------------
 final userCommunitiesProvider = StreamProvider<List<Community>>((ref) {
@@ -110,6 +117,10 @@ class CommunityController extends StateNotifier<bool> {
         }
       },
     );
+  }
+
+  Stream<List<Post>> getCommunityPosts(String name) {
+    return _communityRepository.getCommunityPosts(name);
   }
 
   Stream<List<Community>> getUserCommunities() {

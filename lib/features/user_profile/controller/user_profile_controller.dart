@@ -6,6 +6,7 @@ import 'package:reddit_tutorial/core/providers/storage_repository_provider.dart'
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/features/user_profile/repository/user_profile_repository.dart';
+import 'package:reddit_tutorial/models/post_model.dart';
 import 'package:reddit_tutorial/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
 
@@ -19,6 +20,12 @@ final userProfileControllerProvider =
     storageRepository: storageRepository,
     ref: ref,
   );
+});
+
+// --------------- GET USER POSTS PROVIDER -----------------------------
+final getUserPostsProvider =
+    StreamProvider.family<List<Post>, String>((ref, String uid) {
+  return ref.read(userProfileControllerProvider.notifier).getUserPosts(uid);
 });
 
 // ------------------- USER PROFILE CONTROLLER -----------------------------
@@ -35,6 +42,10 @@ class UserProfileController extends StateNotifier<bool> {
         _storageRepository = storageRepository,
         _ref = ref,
         super(false); // initially false because we are not loading anything
+
+  Stream<List<Post>> getUserPosts(String uid) {
+    return _userProfileRepository.getUserPosts(uid);
+  }
 
   void editUser({
     required File? profileFile,
