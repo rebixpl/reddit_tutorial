@@ -62,6 +62,22 @@ class AuthController extends StateNotifier<bool> {
     );
   }
 
+  void signInAsGuest(BuildContext context) async {
+    state = true; // loading is true when we start the request
+    final user = await _authRepository.signInAsGuest();
+    state = false; // loading is false when we finish the request
+    // Left is an error, Right is a success (userModel)
+    user.fold(
+      (l) => showSnackBar(
+        context,
+        l.message,
+      ),
+      (userModel) => _ref.read(userProvider.notifier).update(
+            (state) => userModel,
+          ),
+    );
+  }
+
   Stream<UserModel> getUserData(String uid) {
     return _authRepository.getUserData(uid);
   }
