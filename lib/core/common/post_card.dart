@@ -30,6 +30,14 @@ class PostCard extends ConsumerWidget {
     ref.read(postControllerProvider.notifier).upvote(post);
   }
 
+  void awardPost(WidgetRef ref, String award, BuildContext context) {
+    ref.read(postControllerProvider.notifier).awardPost(
+          post: post,
+          award: award,
+          context: context,
+        );
+  }
+
   void downvotePost(WidgetRef ref) {
     ref.read(postControllerProvider.notifier).downvote(post);
   }
@@ -132,6 +140,22 @@ class PostCard extends ConsumerWidget {
                                 ),
                             ],
                           ),
+                          if (post.awards.isNotEmpty) ...[
+                            const SizedBox(height: 5.0),
+                            SizedBox(
+                              height: 25.0,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: post.awards.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Image.asset(
+                                    Constants.awards[post.awards[index]]!,
+                                    height: 25.0,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                           Padding(
                             padding: const EdgeInsets.only(
                               top: 10.0,
@@ -267,13 +291,17 @@ class PostCard extends ConsumerWidget {
                                               ) {
                                                 final award =
                                                     user.awards[index];
-                                                return Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                    right: 16.0,
-                                                  ),
-                                                  child: Image.asset(
-                                                    Constants.awards[award]!,
+                                                return GestureDetector(
+                                                  onTap: () => awardPost(
+                                                      ref, award, context),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                      right: 16.0,
+                                                    ),
+                                                    child: Image.asset(
+                                                      Constants.awards[award]!,
+                                                    ),
                                                   ),
                                                 );
                                               },
