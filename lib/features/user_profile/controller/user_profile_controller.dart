@@ -61,7 +61,7 @@ class UserProfileController extends StateNotifier<bool> {
     UserModel user = _ref.read(userProvider)!;
 
     //------- profileFile -------
-    if (profileFile != null) {
+    if (profileFile != null || profileWebFile != null) {
       // FOR EXAMPLE:
       // users/profile/rebix
       // preexisting file will be deleted and replaced with new one
@@ -79,7 +79,7 @@ class UserProfileController extends StateNotifier<bool> {
     }
 
     //------- bannerFile -------
-    if (bannerFile != null) {
+    if (bannerFile != null || bannerWebFile != null) {
       // FOR EXAMPLE:
       // users/banner/rebix
       // preexisting file will be deleted and replaced with new one

@@ -144,7 +144,7 @@ class CommunityController extends StateNotifier<bool> {
     state = true;
 
     //------- profileFile -------
-    if (profileFile != null) {
+    if (profileFile != null || profileWebFile != null) {
       // FOR EXAMPLE:
       // communities/profile/siweKlapkiFanclub
       // preexisting file will be deleted and replaced with new one
@@ -162,7 +162,7 @@ class CommunityController extends StateNotifier<bool> {
     }
 
     //------- bannerFile -------
-    if (bannerFile != null) {
+    if (bannerFile != null || bannerWebFile != null) {
       // FOR EXAMPLE:
       // communities/banner/siweKlapkiFanclub
       // preexisting file will be deleted and replaced with new one
