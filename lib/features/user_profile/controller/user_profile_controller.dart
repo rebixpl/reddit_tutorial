@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
@@ -50,7 +51,9 @@ class UserProfileController extends StateNotifier<bool> {
 
   void editUser({
     required File? profileFile,
+    required Uint8List? profileWebFile,
     required File? bannerFile,
+    required Uint8List? bannerWebFile,
     required BuildContext context,
     required String name,
   }) async {
@@ -66,6 +69,7 @@ class UserProfileController extends StateNotifier<bool> {
         path: 'users/profile',
         id: user.uid,
         file: profileFile,
+        webFile: profileWebFile,
       );
 
       res.fold(
@@ -83,6 +87,7 @@ class UserProfileController extends StateNotifier<bool> {
         path: 'users/banner',
         id: user.uid,
         file: bannerFile,
+        webFile: bannerWebFile,
       );
 
       res.fold(

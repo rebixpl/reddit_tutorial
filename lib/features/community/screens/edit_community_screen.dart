@@ -67,7 +67,9 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
     ref.read(communityControllerProvider.notifier).editCommunity(
           community: community,
           profileFile: profileFile,
+          profileWebFile: profileWebFile,
           bannerFile: bannerFile,
+          bannerWebFile: bannerWebFile,
           context: context,
         );
   }

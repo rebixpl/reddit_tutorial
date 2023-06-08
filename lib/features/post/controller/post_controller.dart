@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/enums/enums.dart';
@@ -159,6 +160,7 @@ class PostController extends StateNotifier<bool> {
     required String title,
     required Community selectedCommunity,
     required File? file,
+    required Uint8List? webFile,
   }) async {
     state = true; // show loader
     String postId = const Uuid().v4();
@@ -169,6 +171,7 @@ class PostController extends StateNotifier<bool> {
       path: 'posts/${selectedCommunity.name}',
       id: postId,
       file: file,
+      webFile: webFile,
     );
 
     imgResult.fold(

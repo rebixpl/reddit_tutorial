@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
@@ -135,7 +136,9 @@ class CommunityController extends StateNotifier<bool> {
   void editCommunity({
     required Community community,
     required File? profileFile,
+    required Uint8List? profileWebFile,
     required File? bannerFile,
+    required Uint8List? bannerWebFile,
     required BuildContext context,
   }) async {
     state = true;
@@ -149,6 +152,7 @@ class CommunityController extends StateNotifier<bool> {
         path: 'communities/profile',
         id: community.name,
         file: profileFile,
+        webFile: profileWebFile,
       );
 
       res.fold(
@@ -166,6 +170,7 @@ class CommunityController extends StateNotifier<bool> {
         path: 'communities/banner',
         id: community.name,
         file: bannerFile,
+        webFile: bannerWebFile,
       );
 
       res.fold(
