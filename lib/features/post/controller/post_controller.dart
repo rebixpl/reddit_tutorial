@@ -47,6 +47,12 @@ final userPostsProvider = StreamProvider.family<List<Post>, List<Community>>(
   return postController.fetchUserPosts(communities);
 });
 
+// ------------------- GUEST POSTS PROVIDER ------------------------
+final guestPostsProvider = StreamProvider<List<Post>>((ref) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.fetchGuestPosts();
+});
+
 // ------------------- POST CONTROLLER ------------------------
 class PostController extends StateNotifier<bool> {
   final PostRepository _postRepository;
@@ -243,6 +249,10 @@ class PostController extends StateNotifier<bool> {
     } else {
       return Stream.value([]);
     }
+  }
+
+  Stream<List<Post>> fetchGuestPosts() {
+    return _postRepository.fetchGuestPosts();
   }
 
   void addComment({
