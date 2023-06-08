@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
@@ -14,8 +15,8 @@ class SingleCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    double cardHeightWidth = 120.0;
-    double iconSize = 60.0;
+    double cardHeightWidth = kIsWeb ? 360.0 : 120.0;
+    double iconSize = kIsWeb ? 120.0 : 60.0;
     final currentTheme = ref.watch(themeNotifierProvider);
 
     return InkWell(

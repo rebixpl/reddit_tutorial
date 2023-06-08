@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/features/post/screen/widgets/single_card.dart';
@@ -12,23 +13,26 @@ class AddPostScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SingleCard(
-          icon: Icons.image_outlined,
-          onTap: () => navigateToType(context, 'image'),
-        ),
-        SingleCard(
-          icon: Icons.font_download_outlined,
-          onTap: () => navigateToType(context, 'text'),
-        ),
-        SingleCard(
-          icon: Icons.link_outlined,
-          onTap: () => navigateToType(context, 'link'),
-        ),
-      ],
+    return Scaffold(
+      appBar: kIsWeb ? AppBar() : null,
+      body: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SingleCard(
+            icon: Icons.image_outlined,
+            onTap: () => navigateToType(context, 'image'),
+          ),
+          SingleCard(
+            icon: Icons.font_download_outlined,
+            onTap: () => navigateToType(context, 'text'),
+          ),
+          SingleCard(
+            icon: Icons.link_outlined,
+            onTap: () => navigateToType(context, 'link'),
+          ),
+        ],
+      ),
     );
   }
 }
