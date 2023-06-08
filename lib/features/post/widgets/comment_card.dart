@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_tutorial/features/auth/controller/auth_controller.dart';
 import 'package:reddit_tutorial/models/comment_model.dart';
 
 class CommentCard extends ConsumerWidget {
@@ -11,6 +12,9 @@ class CommentCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userProvider)!;
+    final isGuest = !user.isAuthenticated;
+
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 10.0,
@@ -44,15 +48,16 @@ class CommentCard extends ConsumerWidget {
               ),
             ],
           ),
-          Row(
-            children: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.reply),
-              ),
-              const Text('Reply'),
-            ],
-          ),
+          if (!isGuest)
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.reply),
+                ),
+                const Text('Reply'),
+              ],
+            ),
         ],
       ),
     );

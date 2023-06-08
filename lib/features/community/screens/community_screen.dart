@@ -36,6 +36,7 @@ class CommunityScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider)!;
+    final isGuest = !user.isAuthenticated;
     final themeMode = ref.watch(themeNotifierProvider.notifier).mode;
 
     return Scaffold(
@@ -80,51 +81,52 @@ class CommunityScreen extends ConsumerWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            community.mods.contains(user.uid)
-                                ? OutlinedButton(
-                                    onPressed: () =>
-                                        navigateToModTools(context),
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Pallete.blueColor,
-                                      backgroundColor:
-                                          themeMode == ThemeMode.dark
-                                              ? Pallete.drawerColor
-                                              : Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                            if (!isGuest)
+                              community.mods.contains(user.uid)
+                                  ? OutlinedButton(
+                                      onPressed: () =>
+                                          navigateToModTools(context),
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor: Pallete.blueColor,
+                                        backgroundColor:
+                                            themeMode == ThemeMode.dark
+                                                ? Pallete.drawerColor
+                                                : Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 20.0,
+                                          vertical: 10.0,
+                                        ),
                                       ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 20.0,
-                                        vertical: 10.0,
+                                      child: const Text('Mod Tools'),
+                                    )
+                                  : OutlinedButton(
+                                      onPressed: () => joinCommunity(
+                                          ref, community, context),
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor: Pallete.blueColor,
+                                        backgroundColor:
+                                            themeMode == ThemeMode.dark
+                                                ? Pallete.drawerColor
+                                                : Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 20.0,
+                                          vertical: 10.0,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        community.members.contains(user.uid)
+                                            ? 'Joined'
+                                            : 'Join',
                                       ),
                                     ),
-                                    child: const Text('Mod Tools'),
-                                  )
-                                : OutlinedButton(
-                                    onPressed: () =>
-                                        joinCommunity(ref, community, context),
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Pallete.blueColor,
-                                      backgroundColor:
-                                          themeMode == ThemeMode.dark
-                                              ? Pallete.drawerColor
-                                              : Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 20.0,
-                                        vertical: 10.0,
-                                      ),
-                                    ),
-                                    child: Text(
-                                      community.members.contains(user.uid)
-                                          ? 'Joined'
-                                          : 'Join',
-                                    ),
-                                  ),
                           ],
                         ),
                         Padding(
