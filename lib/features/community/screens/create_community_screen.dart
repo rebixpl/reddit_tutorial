@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/loader.dart';
 import 'package:reddit_tutorial/features/community/controller/community_controller.dart';
 import 'package:reddit_tutorial/features/user_profile/screens/widgets/rounded_text_field.dart';
+import 'package:reddit_tutorial/responsive/responsive.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
 class CreateCommunityScreen extends ConsumerStatefulWidget {
@@ -39,38 +40,40 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
       ),
       body: isLoading
           ? const Loader()
-          : Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                children: [
-                  const Align(
-                    alignment: Alignment.topLeft,
-                    child: Text('Community Name'),
-                  ),
-                  const SizedBox(height: 10.0),
-                  RoundedTextField(
-                    controller: communityNameController,
-                    hintText: 'r/CommunityName',
-                    maxLength: 21,
-                  ),
-                  const SizedBox(height: 30.0),
-                  ElevatedButton(
-                    onPressed: () => createCommunity(),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+          : Responsive(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  children: [
+                    const Align(
+                      alignment: Alignment.topLeft,
+                      child: Text('Community Name'),
+                    ),
+                    const SizedBox(height: 10.0),
+                    RoundedTextField(
+                      controller: communityNameController,
+                      hintText: 'r/CommunityName',
+                      maxLength: 21,
+                    ),
+                    const SizedBox(height: 30.0),
+                    ElevatedButton(
+                      onPressed: () => createCommunity(),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                      ),
+                      child: const Text(
+                        'Create Community',
+                        style: TextStyle(
+                          color: Pallete.whiteColor,
+                          fontSize: 17.0,
+                        ),
                       ),
                     ),
-                    child: const Text(
-                      'Create Community',
-                      style: TextStyle(
-                        color: Pallete.whiteColor,
-                        fontSize: 17.0,
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
     );

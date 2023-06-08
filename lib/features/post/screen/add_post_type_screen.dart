@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
@@ -10,6 +12,7 @@ import 'package:reddit_tutorial/features/community/controller/community_controll
 import 'package:reddit_tutorial/features/post/controller/post_controller.dart';
 import 'package:reddit_tutorial/features/user_profile/screens/widgets/rounded_text_field.dart';
 import 'package:reddit_tutorial/models/community_model.dart';
+import 'package:reddit_tutorial/responsive/responsive.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
 class AddPostTypeScreen extends ConsumerStatefulWidget {
@@ -33,10 +36,17 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
   Community? selectedCommunity;
 
   File? postFile;
+  Uint8List? postWebFile;
   void selectPostImage() async {
     final res = await pickImage();
 
     if (res != null) {
+      if (kIsWeb) {
+        setState(() {
+          postWebFile = res.files.first.bytes;
+        });
+      }
+
       setState(() {
         postFile = File(res.files.first.path!);
       });
@@ -103,87 +113,91 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
       ),
       body: isLoading
           ? const Loader()
-          : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  RoundedTextField(
-                    controller: titleController,
-                    hintText: 'Enter Title Here',
-                    maxLength: 30,
-                  ),
-                  const SizedBox(height: 10.0),
-                  if (isTypeImage)
-                    GestureDetector(
-                      onTap: selectPostImage,
-                      child: DottedBorder(
-                        radius: const Radius.circular(10.0),
-                        dashPattern: const [10, 4],
-                        borderType: BorderType.RRect,
-                        strokeCap: StrokeCap.round,
-                        color: currentTheme.textTheme.bodyMedium!.color!,
-                        child: Container(
-                          width: double.infinity,
-                          height: 150.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
+          : Responsive(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    RoundedTextField(
+                      controller: titleController,
+                      hintText: 'Enter Title Here',
+                      maxLength: 30,
+                    ),
+                    const SizedBox(height: 10.0),
+                    if (isTypeImage)
+                      GestureDetector(
+                        onTap: selectPostImage,
+                        child: DottedBorder(
+                          radius: const Radius.circular(10.0),
+                          dashPattern: const [10, 4],
+                          borderType: BorderType.RRect,
+                          strokeCap: StrokeCap.round,
+                          color: currentTheme.textTheme.bodyMedium!.color!,
+                          child: Container(
+                            width: double.infinity,
+                            height: 150.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: postWebFile != null
+                                ? Image.memory(postWebFile!)
+                                : postFile != null
+                                    ? Image.file(postFile!)
+                                    : const Center(
+                                        child: Icon(
+                                          Icons.camera_alt_outlined,
+                                          size: 40.0,
+                                        ),
+                                      ),
                           ),
-                          child: postFile != null
-                              ? Image.file(postFile!)
-                              : const Center(
-                                  child: Icon(
-                                    Icons.camera_alt_outlined,
-                                    size: 40.0,
-                                  ),
-                                ),
                         ),
                       ),
-                    ),
-                  if (isTypeText)
-                    RoundedTextField(
-                      controller: descriptionController,
-                      maxLines: 5,
-                      hintText: 'Enter Description Here',
-                    ),
-                  if (isTypeLink)
-                    RoundedTextField(
-                      controller: linkController,
-                      hintText: 'Enter Link Here',
-                    ),
-                  const SizedBox(height: 20.0),
-                  const Align(
-                    alignment: Alignment.topLeft,
-                    child: Text('Select Community'),
-                  ),
-                  ref.watch(userCommunitiesProvider).when(
-                        data: (data) {
-                          communities = data;
-
-                          if (data.isEmpty) const SizedBox();
-
-                          return DropdownButton(
-                            value: selectedCommunity ?? data[0],
-                            items: data
-                                .map(
-                                  (e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Text(e.name),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (val) {
-                              setState(() {
-                                selectedCommunity = val;
-                              });
-                            },
-                          );
-                        },
-                        error: (error, stackTrace) => ErrorText(
-                          error: error.toString(),
-                        ),
-                        loading: () => const Loader(),
+                    if (isTypeText)
+                      RoundedTextField(
+                        controller: descriptionController,
+                        maxLines: 5,
+                        hintText: 'Enter Description Here',
                       ),
-                ],
+                    if (isTypeLink)
+                      RoundedTextField(
+                        controller: linkController,
+                        hintText: 'Enter Link Here',
+                      ),
+                    const SizedBox(height: 20.0),
+                    const Align(
+                      alignment: Alignment.topLeft,
+                      child: Text('Select Community'),
+                    ),
+                    ref.watch(userCommunitiesProvider).when(
+                          data: (data) {
+                            communities = data;
+
+                            if (data.isEmpty) const SizedBox();
+
+                            return DropdownButton(
+                              value: selectedCommunity ?? data[0],
+                              items: data
+                                  .map(
+                                    (e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(e.name),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  selectedCommunity = val;
+                                });
+                              },
+                            );
+                          },
+                          error: (error, stackTrace) => ErrorText(
+                            error: error.toString(),
+                          ),
+                          loading: () => const Loader(),
+                        ),
+                  ],
+                ),
               ),
             ),
     );

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_tutorial/core/common/error_text.dart';
@@ -9,6 +10,7 @@ import 'package:reddit_tutorial/core/constants/constants.dart';
 import 'package:reddit_tutorial/core/utils.dart';
 import 'package:reddit_tutorial/features/community/controller/community_controller.dart';
 import 'package:reddit_tutorial/models/community_model.dart';
+import 'package:reddit_tutorial/responsive/responsive.dart';
 import 'package:reddit_tutorial/theme/pallete.dart';
 
 class EditCommunityScreen extends ConsumerStatefulWidget {
@@ -26,10 +28,17 @@ class EditCommunityScreen extends ConsumerStatefulWidget {
 
 class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
   File? bannerFile;
+  Uint8List? bannerWebFile;
   void selectBannerImage() async {
     final res = await pickImage();
 
     if (res != null) {
+      if (kIsWeb) {
+        setState(() {
+          bannerWebFile = res.files.first.bytes;
+        });
+      }
+
       setState(() {
         bannerFile = File(res.files.first.path!);
       });
@@ -37,10 +46,17 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
   }
 
   File? profileFile;
+  Uint8List? profileWebFile;
   void selectProfileImage() async {
     final res = await pickImage();
 
     if (res != null) {
+      if (kIsWeb) {
+        setState(() {
+          profileWebFile = res.files.first.bytes;
+        });
+      }
+
       setState(() {
         profileFile = File(res.files.first.path!);
       });
@@ -75,66 +91,82 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
             ),
             body: isLoading
                 ? const Loader()
-                : Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 200.0,
-                          child: Stack(
-                            children: [
-                              GestureDetector(
-                                onTap: selectBannerImage,
-                                child: DottedBorder(
-                                  radius: const Radius.circular(10.0),
-                                  dashPattern: const [10, 4],
-                                  borderType: BorderType.RRect,
-                                  strokeCap: StrokeCap.round,
-                                  color:
-                                      currentTheme.textTheme.bodyMedium!.color!,
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: 150.0,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10.0),
+                : Responsive(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 200.0,
+                            child: Stack(
+                              children: [
+                                GestureDetector(
+                                  onTap: selectBannerImage,
+                                  child: DottedBorder(
+                                    radius: const Radius.circular(10.0),
+                                    dashPattern: const [10, 4],
+                                    borderType: BorderType.RRect,
+                                    strokeCap: StrokeCap.round,
+                                    color: currentTheme
+                                        .textTheme.bodyMedium!.color!,
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: 150.0,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      child: bannerWebFile != null
+                                          ? Image.memory(bannerWebFile!)
+                                          : bannerFile != null
+                                              ? Image.file(bannerFile!)
+                                              : community.banner.isEmpty ||
+                                                      community.banner ==
+                                                          Constants
+                                                              .bannerDefault
+                                                  ? const Center(
+                                                      child: Icon(
+                                                        Icons
+                                                            .camera_alt_outlined,
+                                                        size: 40.0,
+                                                      ),
+                                                    )
+                                                  : Image.network(
+                                                      community.banner),
                                     ),
-                                    child: bannerFile != null
-                                        ? Image.file(bannerFile!)
-                                        : community.banner.isEmpty ||
-                                                community.banner ==
-                                                    Constants.bannerDefault
-                                            ? const Center(
-                                                child: Icon(
-                                                  Icons.camera_alt_outlined,
-                                                  size: 40.0,
-                                                ),
-                                              )
-                                            : Image.network(community.banner),
                                   ),
                                 ),
-                              ),
-                              Positioned(
-                                bottom: 20.0,
-                                left: 20.0,
-                                child: GestureDetector(
-                                  onTap: selectProfileImage,
-                                  child: profileFile != null
-                                      ? CircleAvatar(
-                                          backgroundImage:
-                                              Image.file(profileFile!).image,
-                                          radius: 32.0,
-                                        )
-                                      : CircleAvatar(
-                                          backgroundImage:
-                                              NetworkImage(community.avatar),
-                                          radius: 32.0,
-                                        ),
+                                Positioned(
+                                  bottom: 20.0,
+                                  left: 20.0,
+                                  child: GestureDetector(
+                                    onTap: selectProfileImage,
+                                    child: profileWebFile != null
+                                        ? CircleAvatar(
+                                            backgroundImage:
+                                                Image.memory(profileWebFile!)
+                                                    .image,
+                                            radius: 32.0,
+                                          )
+                                        : profileFile != null
+                                            ? CircleAvatar(
+                                                backgroundImage:
+                                                    Image.file(profileFile!)
+                                                        .image,
+                                                radius: 32.0,
+                                              )
+                                            : CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                    community.avatar),
+                                                radius: 32.0,
+                                              ),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
           ),
