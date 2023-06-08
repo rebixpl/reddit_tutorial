@@ -22,6 +22,7 @@ class ProfileDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider)!;
+    final isGuest = !user.isAuthenticated;
 
     return Drawer(
       child: SafeArea(
@@ -41,11 +42,13 @@ class ProfileDrawer extends ConsumerWidget {
             ),
             const SizedBox(height: 10.0),
             const Divider(),
-            ListTile(
-              title: const Text('My Profile'),
-              leading: const Icon(Icons.person),
-              onTap: () => navigateToUserProfile(context, user.uid),
-            ),
+            isGuest
+                ? const SizedBox.shrink()
+                : ListTile(
+                    title: const Text('My Profile'),
+                    leading: const Icon(Icons.person),
+                    onTap: () => navigateToUserProfile(context, user.uid),
+                  ),
             ListTile(
               title: const Text('Log Out'),
               leading: Icon(
